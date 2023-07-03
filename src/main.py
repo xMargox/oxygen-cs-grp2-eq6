@@ -10,10 +10,10 @@ class Main:
     def __init__(self):
         self._hub_connection = None
         self.HOST = "http://34.95.34.5"  # Setup your host here
-        self.TOKEN = os.environ['TOKEN']  # Setup your token here
+        self.TOKEN = os.environ["TOKEN"]  # Setup your token here
         self.TICKETS = None  # Setup your tickets here
-        self.T_MAX = os.environ.get('T_MAX', 21) # Setup your max temperature here
-        self.T_MIN = os.environ.get('T_MIN', 15)  # Setup your min temperature here
+        self.T_MAX = os.environ.get("T_MAX", 21)  # Setup your max temperature here
+        self.T_MIN = os.environ.get("T_MIN", 15)  # Setup your min temperature here
         self.DATABASE = None  # Setup your database here
 
     def __del__(self):
@@ -50,7 +50,9 @@ class Main:
         self._hub_connection.on("ReceiveSensorData", self.onSensorDataReceived)
         self._hub_connection.on_open(lambda: print("||| Connection opened."))
         self._hub_connection.on_close(lambda: print("||| Connection closed."))
-        self._hub_connection.on_error(lambda data: print(f"||| An exception was thrown closed: {data.error}"))
+        self._hub_connection.on_error(
+            lambda data: print(f"||| An exception was thrown closed: {data.error}")
+        )
 
     def onSensorDataReceived(self, data):
         try:
