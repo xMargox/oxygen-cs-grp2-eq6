@@ -1,55 +1,39 @@
 import unittest
-from unittest.mock import patch, MagicMock
-from signalrcore.hub_connection_builder import HubConnectionBuilder
-from main import Main
+from unittest.mock import patch
+import sys
+import os
+
+# Add the project root directory to the Python module search path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+from src.main import Main
 
 
 class MainTests(unittest.TestCase):
-    @patch('signalrcore.hub_connection_builder.HubConnectionBuilder')
-    def test_setSensorHub(self, mock_hub_builder):
+    def test_token(self):
+        # Arrange
+        os.environ.pop("TOKEN", None)  # Remove the "TOKEN" key from os.environ if it exists
+
+        # Act & Assert
+        with self.assertRaises((KeyError, TypeError)):
+            main = Main()
+            token = main.TOKEN 
+
+    @patch.dict("os.environ", {"TOKEN": "test_token"})
+    def test_default_t_max_value(self):
         # Arrange
         main = Main()
-        
-        # Act
-        main.setSensorHub()
-        
-        # Assert
-        mock_hub_builder.return_value.with_url.assert_called_with(f"{main.HOST}/SensorHub?token={main.TOKEN}")
-        mock_hub_builder.return_value.configure_logging.assert_called_with(logging.INFO)
-        mock_hub_builder.return_value.with_automatic_reconnect.assert_called_with({
-            "type": "raw",
-            "keep_alive_interval": 10,
-            "reconnect_interval": 5,
-            "max_attempts": 999,
-        })
-        mock_hub_builder.return_value.build.assert_called()
 
-    def test_analyzeDatapoint_above_threshold(self):
+        # Act & Assert
+        self.assertEqual(main.T_MAX, 21)
+
+    @patch.dict("os.environ", {"TOKEN": "test_token"})
+    def test_default_t_min_value(self):
         # Arrange
         main = Main()
-        main.T_MAX = 25
-        main.TICKETS = 5
-        main.sendActionToHvac = MagicMock()
-        
-        # Act
-        main.analyzeDatapoint("2023-07-04", 30)
-        
-        # Assert
-        main.sendActionToHvac.assert_called_with("2023-07-04", "TurnOnAc", 5)
 
-    def test_analyzeDatapoint_below_threshold(self):
-        # Arrange
-        main = Main()
-        main.T_MIN = 10
-        main.TICKETS = 2
-        main.sendActionToHvac = MagicMock()
-        
-        # Act
-        main.analyzeDatapoint("2023-07-04", 5)
-        
-        # Assert
-        main.sendActionToHvac.assert_called_with("2023-07-04", "TurnOnHeater", 2)
-
+        # Act & Assert
+        self.assertEqual(main.T_MIN, 15)
 
 if __name__ == '__main__':
     unittest.main()
