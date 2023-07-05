@@ -27,6 +27,7 @@ jobs:
       run: |
         pip install pipenv
         pip install flake8 
+        pipenv install
       working-directory: ${{ github.workspace }}
     - name: Lint with flake8
       run: |
