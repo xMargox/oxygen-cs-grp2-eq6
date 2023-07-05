@@ -39,7 +39,7 @@ jobs:
       working-directory: ${{ github.workspace }}
 
     - name: Build and Publish
-      if: ${{ github.event_name == 'pull-request' }}
+      if: ${{ github.event_name == 'pull_request' }}
       run: |
         docker build -t oxygenos .
         docker run --name log680 oxygenos
