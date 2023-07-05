@@ -39,7 +39,7 @@ jobs:
       working-directory: ${{ github.workspace }}
   
     - name: Set up Docker Buildx
-      if: ${{ github.event_name == 'push' }}
+      if: ${{ github.event_name == 'pull-request' }}
       uses: docker/setup-buildx-action@v1
 
     - name: Build Docker image
@@ -56,5 +56,5 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
-    - run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/oxygenos:latest
-    - run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/oxygenos:{{ github.sha }}
+      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/oxygenos:latest
+      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/oxygenos:{{ github.sha }}
