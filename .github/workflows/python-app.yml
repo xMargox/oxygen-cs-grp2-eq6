@@ -56,5 +56,6 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
-      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/oxygenos:latest
-      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/oxygenos:{{ github.sha }}
+      run: |
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/oxygenos:latest
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/oxygenos:${{ github.sha }}
