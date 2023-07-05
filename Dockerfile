@@ -8,8 +8,6 @@ COPY Pipfile Pipfile.lock /app/
 
 COPY src /app
 
-ENV TOKEN=69aWxpk655
-
 # Install app dependencies
 RUN pip install pipenv
 RUN pipenv install --system --deploy --ignore-pipfile
