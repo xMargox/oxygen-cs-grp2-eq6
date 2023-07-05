@@ -1,0 +1,9 @@
+Dockerfile
+README.md
+LICENSE
+doc/
+**/__pycache__/
+**/__init__.py
+.pre-commit-config.yaml
+.env
+.vscode
