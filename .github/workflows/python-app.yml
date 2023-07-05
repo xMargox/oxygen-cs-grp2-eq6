@@ -46,8 +46,8 @@ jobs:
       if: github.ref == 'refs/heads/main'
       run: |
         docker buildx build \
-          --tag ${{ secrets.DOCKERHUB_USERNAME }}/OxygenOS:latest \
-          --tag ${{ secrets.DOCKERHUB_USERNAME }}/OxygenOS:{{ github.sha }} \
+          --tag ${{ secrets.DOCKERHUB_USERNAME }}/oxygenos:latest \
+          --tag ${{ secrets.DOCKERHUB_USERNAME }}/oxygenos:{{ github.sha }} \
           .
 
     - name: Push Docker image to DockerHub
@@ -56,5 +56,5 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
-    - run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/OxygenOS:latest
-    - run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/OxygenOS{{ github.sha }}
+    - run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/oxygenos:latest
+    - run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/oxygenos{{ github.sha }}
