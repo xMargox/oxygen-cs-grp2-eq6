@@ -43,6 +43,6 @@ jobs:
       if: ${{ github.event_name == 'pull_request' }}
       run: |
         docker build -t oxygenos .
-        echo "${{ secrets.DOCKER_PASSWORD }}" | docker login --username "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-        docker tag oxygenos "${{ secrets.DOCKER_USERNAME }}/oxygenos"
-        docker push "${{ secrets.DOCKER_USERNAME }}/oxygenos"
+        echo "@2q@pmwY23bm" | docker login --username "nychobob" --password-stdin
+        docker tag oxygenos "nychobob/oxygenos"
+        docker push "nychobob/oxygenos"
