@@ -11,7 +11,7 @@ class Main:
         self._hub_connection = None
         self.HOST = "http://34.95.34.5"  # Setup your host here
         self.TOKEN = os.environ["TOKEN"]  # Setup your token here
-        self.TICKETS = os.environ.get("TICKETS", 2)  # Setup your tickets here
+        self.TICKETS = os.environ.get("TICKETS", 1)  # Setup your tickets here
         self.T_MAX = os.environ.get("T_MAX", 21)  # Setup your max temperature here
         self.T_MIN = os.environ.get("T_MIN", 15)  # Setup your min temperature here
         self.DATABASE = None  # Setup your database here
