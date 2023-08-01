@@ -74,7 +74,8 @@ class Main:
     def send_event_to_database(self, timestamp, event):
         try:
             # Create the connection to the database
-            connection_string = "host=" + os.environ["host"] + ";port=" + os.environ["port"] + ";dbname=" + os.environ["database"] + ";user=" + os.environ["username"] + ";password=" + os.environ["password"]
+            connection_string = "host=" + os.environ["host"] + " port=" + os.environ["port"] + " dbname=" + os.environ["database"] + " user=" + os.environ["username"] + " password=" + os.environ["password"]
+            print(connection_string)
             connection = psycopg2.connect(connection_string)
 
             # Create a cursor to execute SQL commands
