@@ -15,8 +15,7 @@ class Main:
         self.TICKETS = os.environ.get("TICKETS", 2)  # Setup your tickets here
         self.T_MAX = os.environ.get("T_MAX", 21)  # Setup your max temperature here
         self.T_MIN = os.environ.get("T_MIN", 15)  # Setup your min temperature here
-        self.DATABASE = None  # Setup your database here
-
+        self.connection_string = "host=" + os.environ["host"] + " port=" + os.environ["port"] + " dbname=" + os.environ["database"] + " user=" + os.environ["username"] + " password=" + os.environ["password"]
     def __del__(self):
         if self._hub_connection != None:
             self._hub_connection.stop()
@@ -60,7 +59,7 @@ class Main:
             print(data[0]["date"] + " --> " + data[0]["data"])
             date = data[0]["date"]
             dp = float(data[0]["data"])
-            #self.send_temperature_to_fastapi(date, dp)
+            self.send_temperature_to_db(date[:19], dp)
             self.analyzeDatapoint(date, dp)
         except Exception as err:
             print(err)
@@ -71,11 +70,54 @@ class Main:
         elif float(data) <= float(self.T_MIN):
             self.sendActionToHvac(date, "TurnOnHeater", self.TICKETS)
 
+    def send_temperature_to_db(self, timestamp, temperature):
+        try:
+            # Create the connection to the database
+            connection = psycopg2.connect(self.connection_string)
+
+            # Create a cursor to execute SQL commands
+            cursor = connection.cursor()
+
+            # Check if the table exists, and create it if it doesn't
+            table_name = "oxygen_temperature"
+            check_table_query = f"SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_name='{table_name}')"
+            cursor.execute(check_table_query)
+            table_exists = cursor.fetchone()[0]
+
+            if not table_exists:
+                create_table_query = f"""
+                CREATE TABLE {table_name} (
+                    id SERIAL PRIMARY KEY,
+                    timestamp_column TIMESTAMP NOT NULL,
+                    temperature_column REAL NOT NULL
+                )
+                """
+                cursor.execute(create_table_query)
+                connection.commit()
+                print(f"Table '{table_name}' created successfully.")
+
+            # Define the SQL query to insert the temperature data into the database table
+            insert_query = f"INSERT INTO {table_name} (timestamp_column, temperature_column) VALUES (%s, %s);"
+
+            # Execute the query with the timestamp and temperature data
+            cursor.execute(insert_query, (timestamp, temperature))
+
+            # Commit the changes to the database
+            connection.commit()
+
+            # Close the cursor and the connection
+            cursor.close()
+            connection.close()
+
+            print("Temperature registered in the database.")
+
+        except psycopg2.Error as e:
+            print("Error occurred during the database operation:", e)
+
     def send_event_to_database(self, timestamp, event):
         try:
             # Create the connection to the database
-            connection_string = "host=" + os.environ["host"] + " port=" + os.environ["port"] + " dbname=" + os.environ["database"] + " user=" + os.environ["username"] + " password=" + os.environ["password"]
-            connection = psycopg2.connect(connection_string)
+            connection = psycopg2.connect(self.connection_string)
 
             # Create a cursor to execute SQL commands
             cursor = connection.cursor()
